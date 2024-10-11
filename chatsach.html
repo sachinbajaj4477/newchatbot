@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" href="https://flivo.ai/wp-content/uploads/2023/03/fliveai-logo2.jpeg" type="image/x-icon">
+<title>FlivoChats</title>
+<style>
+       /* Existing styles */
+       body {
+           font-family: Arial, sans-serif;
+           margin: 0;
+           padding: 0;
+           background-color: #f4f4f4;
+           display: flex;
+           height: 100vh;
+           flex-direction: column;
+       }
+       .chat-container {
+           flex: 1;
+           display: flex;
+           flex-direction: column;
+           padding: 20px;
+       }
+       .chat-area {
+           flex: 1;
+           background: white;
+           border: 1px solid #ccc;
+           border-radius: 5px;
+           padding: 10px;
+           overflow-y: auto;
+           display: flex;
+           flex-direction: column;
+           margin-bottom: 10px;
+       }
+       .message {
+           margin: 5px 0;
+       }
+       .message.user {
+           align-self: flex-end;
+           background: #007bff;
+           color: white;
+           border-radius: 5px;
+           padding: 5px 10px;
+           max-width: 70%;
+       }
+       .message.bot {
+           align-self: flex-start;
+           background: #e9ecef;
+           color: black;
+           border-radius: 5px;
+           padding: 5px 10px;
+           max-width: 70%;
+       }
+       /* Input area */
+       .input-area {
+           display: flex;
+           align-items: center;
+           margin-top: 10px;
+           background-color: #fff;
+           border: 1px solid #ccc;
+           border-radius: 5px;
+           padding: 5px;
+       }
+       .input-area input {
+           flex: 1;
+           padding: 10px;
+           border: none;
+           outline: none;
+           font-size: 16px;
+       }
+       .input-area .send-button {
+           background-color: lightgray;
+           border: none;
+           padding: 10px;
+           cursor: pointer;
+           transition: background-color 0.3s;
+       }
+       .input-area .send-button.enabled {
+           background-color: #007bff;
+           color: white;
+       }
+       .input-area .send-button img {
+           width: 20px;
+           height: 20px;
+       }
+       /* Suggested Queries Section */
+       .suggested-queries {
+           display: flex;
+           flex-wrap: wrap;
+           justify-content: space-around;
+           margin-bottom: 10px;
+       }
+       .suggested-queries button {
+           background-color: #333;
+           color: white;
+           padding: 10px;
+           border-radius: 8px;
+           border: none;
+           margin: 5px;
+           flex: 1 1 45%;
+           cursor: pointer;
+           font-size: 14px;
+           text-align: center;
+           transition: background-color 0.3s ease;
+       }
+       .suggested-queries button:hover {
+           background-color: #555;
+       }
+       /* Responsive */
+       @media (max-width: 768px) {
+           .suggested-queries button {
+               font-size: 12px;
+               padding: 8px;
+           }
+           .input-area input {
+               font-size: 14px;
+           }
+       }
+</style>
+</head>
+<body>
+<div class="chat-container">
+<!-- Suggested Queries -->
+<div class="suggested-queries" id="suggestedQueries">
+<button onclick="sendSuggestedMessage('Create an illustration for a bakery')">Create an illustration<br>for a bakery</button>
+<button onclick="sendSuggestedMessage('Create a recipe using ingredients from my kitchen')">Create a recipe<br>using ingredients from my kitchen</button>
+<button onclick="sendSuggestedMessage('Find the decade that a photo is from')">Find the decade<br>that a photo is from</button>
+<button onclick="sendSuggestedMessage('Plan a mental health day to help me relax')">Plan a mental health day<br>to help me relax</button>
+</div>
+<!-- Chat Area -->
+<div class="chat-area" id="chatArea">
+<!-- Chat messages will be displayed here -->
+</div>
+<!-- Input Area -->
+<div class="input-area">
+<input type="text" id="userInput" placeholder="Type a message..." />
+<button class="send-button" id="sendButton">
+<img src="https://cdn-icons-png.flaticon.com/256/786/786205.png" alt="Send">
+</button>
+</div>
+</div>
+<script>
+       const chatArea = document.getElementById('chatArea');
+       const userInput = document.getElementById('userInput');
+       const sendButton = document.getElementById('sendButton');
+       sendButton.addEventListener('click', sendMessage);
+       userInput.addEventListener('keypress', function(event) {
+           if (event.key === 'Enter') {
+               sendMessage();
+           }
+       });
+       function sendSuggestedMessage(message) {
+           userInput.value = message;
+           sendMessage();
+       }
+       async function sendMessage() {
+           const messageText = userInput.value;
+           if (messageText.trim() !== "") {
+               // Display user message
+               const userMessage = document.createElement('div');
+               userMessage.className = 'message user';
+               userMessage.textContent = messageText;
+               chatArea.appendChild(userMessage);
+               chatArea.scrollTop = chatArea.scrollHeight;
+               // Fetch bot response from Dialogflow API
+               const botResponse = await getBotResponse(messageText);
+               // Display bot message
+               const botMessage = document.createElement('div');
+               botMessage.className = 'message bot';
+               botMessage.innerHTML = botResponse;
+               chatArea.appendChild(botMessage);
+               chatArea.scrollTop = chatArea.scrollHeight;
+               userInput.value = ""; // Clear input
+           }
+       }
+       async function getBotResponse(query) {
+           // Here, you'll need to connect with your Dialogflow API
+           return new Promise((resolve) => {
+               setTimeout(() => {
+                   resolve("This is a placeholder response for the query: " + query);
+               }, 1000);
+           });
+       }
+</script>
+</body>
+</html>
