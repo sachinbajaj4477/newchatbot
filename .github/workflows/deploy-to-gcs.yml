@@ -1,27 +1,15 @@
-name: Deploy to Google Cloud Storage
-
-# Trigger the workflow on push to the main branch (or any other branch you prefer)
-on:
-  push:
-    branches:
-      - main  # Change this to your branch if needed
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository content
-      uses: actions/checkout@v2
-
-    - name: Set up Google Cloud SDK
-      uses: google-github-actions/setup-gcloud@v1
-      with:
-        project_id: "hale-equator-435411"  # Replace with your Google Cloud Project ID
-        service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}  # Uses the service account key from GitHub secrets
-
-    - name: Sync files to Google Cloud Storage
-      run: |
-        gsutil -m rsync -r ./ gs://chatsach  # Replace with your Google Cloud Storage bucket name
-      env:
-        GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: "hale-equator-435411"
+          service_account_key: ${{ secrets.GCP_KEY_FILE }}
+      - name: Authenticate with Google Cloud
+        run: gcloud auth activate-service-account --key-file=${{ secrets.GCP_KEY_FILE }}
+      - name: Upload to GCS bucket
+        run: gsutil cp your-file.txt gs://chatsach/
