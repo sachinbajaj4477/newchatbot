@@ -1,26 +1,25 @@
-name: Deploy to GCP
+name: Deploy to Google Cloud Storage
 
 on:
   push:
     branches:
-      - main
+      - main  # Change this to your default branch if different
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@master
+        uses: google-github-actions/setup-gcloud@v0.2.1
         with:
-          project_id: hale-equator-435411-k5  # Replace with your actual GCP project ID
-          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}  # Use GitHub Secrets for your service account key
+          project_id: hale-equator-435411  # Your project ID
+          export_default_credentials: true
 
-      - name: Authenticate with Google Cloud
-        run: gcloud auth activate-service-account --key-file=${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-
-      - name: Upload to GCS bucket
-        run: gsutil cp your-file.txt gs://your-bucket-name/  # Replace with the actual bucket name and file path
+      - name: Deploy to Google Cloud Storage
+        run: |
+          gsutil cp -r ./path-to-your-files/* gs://chatsach/
